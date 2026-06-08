@@ -14,29 +14,29 @@ const C = {
 }
 
 const MICKEY = {
-  name:'Mickey Mouse', age:71, site:'Próstata', week:7, totalWeeks:8,
+  name:'Roberto C. M.', age:71, site:'Próstata', week:4, totalWeeks:4,
   ficha:{
     diagnostico:'Adenocarcinoma de próstata',
     estadiamento:'cT2bN0M0 — Grau ISUP 2 (Gleason 3+4=7)',
     tecnica:'VMAT — Volumetric Modulated Arc Therapy',
-    dosePrescrita:'70 Gy / 35 frações',
-    doseAcumulada:'62 Gy',
-    fracoesTotais:35,
-    fracoesRealizadas:31,
-    inicioTratamento:'15/03/2026',
-    terminoPrevisto:'12/05/2026',
-    seguimentoAte:'12/06/2026',
-    medico:'Dr. Tadeu Ludwig',
-    fisico:'Dr. Bernardo Pinatti',
-    servico:'HCI — Hospital de Caridade de Ijuí',
+    dosePrescrita:'60 Gy / 20 frações',
+    doseAcumulada:'54 Gy',
+    fracoesTotais:20,
+    fracoesRealizadas:18,
+    inicioTratamento:'15/04/2026',
+    terminoPrevisto:'09/05/2026',
+    seguimentoAte:'09/06/2026',
+    medico:'Dra. Renata Oliveira',
+    fisico:'Dr. André Silveira',
+    servico:'Serviço de Radioterapia — Demo',
     observacoes:'Hormonioterapia concomitante (LHRH análogo). Radioterapia pélvica excluída — tumor confinado à próstata.',
   },
-  fracoes: Array.from({length:35},(_,i)=>{
+  fracoes: Array.from({length:20},(_,i)=>{
     const semana=Math.floor(i/5)+1
     const diaSemana=i%5
     const labels=['Seg','Ter','Qua','Qui','Sex']
-    if(i<30) return {n:i+1,semana,dia:labels[diaSemana],status:'done'}
-    if(i===30) return {n:31,semana:7,dia:'Seg',status:'today'}
+    if(i<17) return {n:i+1,semana,dia:labels[diaSemana],status:'done'}
+    if(i===17) return {n:18,semana:4,dia:'Seg',status:'today'}
     return {n:i+1,semana:Math.floor(i/5)+1,dia:labels[diaSemana],status:'scheduled'}
   }),
 }
@@ -86,8 +86,86 @@ const ZONE_CFG={
 }
 
 function UrgencyMeter({value,onChange}){
-  const segs=[{color:C.teal400,label:'Sem urgência'},{color:C.teal200,label:'Raramente'},{color:C.amber400,label:'Às vezes'},{color:C.coral400,label:'Frequentemente'},{color:C.red400,label:'Perdi o controle'}]
-  return(<div><div style={{display:'flex',gap:4,marginBottom:6}}>{segs.map((s,i)=><div key={i} onClick={()=>onChange(i)} style={{flex:1,height:18,borderRadius:3,background:s.color,opacity:i<=value?1:0.18,cursor:'pointer',transition:'opacity 0.15s'}}/>)}</div><div style={{fontSize:11,color:C.gray600,textAlign:'center'}}>{segs[value]?.label}</div></div>)
+  const opts=[
+    {score:0,emoji:'😌',label:'Nenhuma',desc:'Consigo segurar normalmente'},
+    {score:1,emoji:'🙂',label:'Leve',desc:'Sinto urgência raramente'},
+    {score:2,emoji:'😐',label:'Moderada',desc:'Às vezes não consigo segurar'},
+    {score:3,emoji:'😟',label:'Intensa',desc:'Frequentemente perco o controle'},
+    {score:4,emoji:'😰',label:'Grave',desc:'Quase sempre perco o controle'},
+  ]
+  return(
+    <div>
+      <div style={{display:'flex',gap:6,marginBottom:10}}>
+        {opts.map((o,i)=>(
+          <div key={i} onClick={()=>onChange(i)} style={{
+            flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:4,
+            padding:'10px 4px',borderRadius:10,cursor:'pointer',transition:'all 0.15s',
+            border:`${value===i?'2px':'0.5px'} solid ${value===i?[C.teal400,C.teal200,C.amber400,C.coral400,C.red400][i]:C.gray100}`,
+            background:value===i?[[C.teal50,C.teal50,C.amber50,C.coral50,C.red50][i]]:'transparent',
+          }}>
+            <span style={{fontSize:22}}>{o.emoji}</span>
+            <span style={{fontSize:10,fontWeight:value===i?600:400,color:value===i?C.gray900:C.gray400,textAlign:'center'}}>{o.label}</span>
+          </div>
+        ))}
+      </div>
+      {value!==null&&<div style={{fontSize:12,color:C.gray600,textAlign:'center',padding:'8px 12px',background:C.gray50,borderRadius:8}}>{opts[value].desc}</div>}
+    </div>
+  )
+}
+
+function DiorreiaFreq({value,onChange}){
+  const opts=[
+    {score:0,icon:'0×',label:'Nenhuma',color:C.teal400},
+    {score:1,icon:'1-2×',label:'Amolecidas',color:C.teal200},
+    {score:2,icon:'3-4×',label:'Diarreia leve',color:C.amber400},
+    {score:3,icon:'5-6×',label:'Diarreia intensa',color:C.coral400},
+    {score:4,icon:'+7×',label:'Grave / sangue',color:C.red400},
+  ]
+  return(
+    <div>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:6,marginBottom:8}}>
+        {opts.map((o,i)=>(
+          <div key={i} onClick={()=>onChange(i)} style={{
+            display:'flex',flexDirection:'column',alignItems:'center',gap:5,
+            padding:'10px 4px',borderRadius:10,cursor:'pointer',
+            border:`${value===i?'2px':'0.5px'} solid ${value===i?o.color:C.gray100}`,
+            background:value===i?`${o.color}18`:'transparent',transition:'all 0.15s',textAlign:'center',
+          }}>
+            <span style={{fontSize:15,fontWeight:700,color:value===i?o.color:C.gray600}}>{o.icon}</span>
+            <span style={{fontSize:9,color:value===i?o.color:C.gray400,lineHeight:1.3}}>{o.label}</span>
+          </div>
+        ))}
+      </div>
+      <div style={{display:'flex',gap:3,alignItems:'flex-end',height:36,marginBottom:4}}>
+        {opts.map((o,i)=>(
+          <div key={i} style={{
+            flex:1,height:`${(i+1)*20}%`,borderRadius:'3px 3px 0 0',
+            background:o.color,opacity:value===i?1:0.2,transition:'opacity 0.2s',
+          }}/>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function PainSlider({value,onChange}){
+  const emojis=['😌','😌','🙂','🙂','😐','😐','😟','😟','😣','😣','😭']
+  const painColor=value<=3?C.teal600:value<=6?C.amber600:C.red400
+  return(
+    <div>
+      <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:12,marginBottom:12}}>
+        <span style={{fontSize:36}}>{emojis[value]}</span>
+        <span style={{fontSize:36,fontWeight:700,color:painColor}}>{value}<span style={{fontSize:16,color:C.gray400}}>/10</span></span>
+      </div>
+      <div style={{height:6,borderRadius:4,background:`linear-gradient(to right, ${C.teal400}, ${C.amber400}, ${C.red400})`,marginBottom:8}}/>
+      <input type="range" min={0} max={10} step={1} value={value}
+        onChange={e=>onChange(parseInt(e.target.value))}
+        style={{width:'100%',accentColor:painColor}}/>
+      <div style={{display:'flex',justifyContent:'space-between',fontSize:9,color:C.gray400}}>
+        <span>0 — Sem dor</span><span>5 — Moderada</span><span>10 — Insuportável</span>
+      </div>
+    </div>
+  )
 }
 
 function IntensityBars({value,onChange,labels}){
@@ -242,9 +320,9 @@ function PatientForm({onBack,week,site}){
   const steps=[
     {title:'Onde você está sentindo desconforto?',sub:'Toque em todas as regiões que incomodam hoje',content:(<div><div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:14}}>{Object.entries(ZONE_CFG).map(([id,cfg])=>{const on=zones[id];const dim=anyZone&&!on;return(<div key={id} onClick={()=>toggleZone(id)} style={{border:`${on?'2px':'1.5px'} ${on?'solid':'dashed'} ${on?cfg.border:C.gray100}`,borderRadius:12,padding:'14px 10px',cursor:'pointer',background:on?cfg.bg:'transparent',opacity:dim?0.28:1,display:'flex',flexDirection:'column',alignItems:'center',gap:8,textAlign:'center',transition:'all 0.2s'}}><cfg.Icon size={48}/><div style={{fontSize:12,fontWeight:500,color:on?cfg.text:C.gray900}}>{cfg.name}</div><div style={{fontSize:10,color:on?cfg.text:C.gray400,lineHeight:1.4}}>{cfg.sub}</div></div>)})}</div><div onClick={()=>setZones({bladder:false,urethra:false,rectum:false,lumbar:false})} style={{border:`0.5px solid ${C.gray100}`,borderRadius:10,padding:'10px 14px',cursor:'pointer',display:'flex',alignItems:'center',gap:10,fontSize:12,color:C.gray600}}><span style={{fontSize:16}}>—</span> Sem desconforto hoje</div></div>)},
     {title:'Sintomas urinários',sub:'Como foi hoje para urinar?',content:(<div style={{display:'flex',flexDirection:'column',gap:18}}>{orUrin&&<OrientacaoCard {...orUrin}/>}<div><div style={{fontSize:13,fontWeight:500,color:C.gray900,marginBottom:10}}>Com que frequência foi ao banheiro?</div><div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:6}}>{freqOpts.map((l,i)=>(<div key={i} onClick={()=>setFreq(i)} style={{display:'flex',flexDirection:'column',alignItems:'center',gap:5,padding:'10px 4px',borderRadius:10,border:`${freq===i?'2px':'0.5px'} solid ${freq===i?C.teal400:C.gray100}`,background:freq===i?C.teal50:'transparent',cursor:'pointer',textAlign:'center'}}><span style={{fontSize:16,fontWeight:500,color:freq===i?C.teal600:C.gray600}}>{['1×','2×','5×','8×','∞'][i]}</span><span style={{fontSize:9,color:freq===i?C.teal800:C.gray400,lineHeight:1.3}}>{l}</span></div>))}</div></div><div><div style={{fontSize:13,fontWeight:500,color:C.gray900,marginBottom:10}}>Urgência — conseguiu segurar?</div><UrgencyMeter value={urgency} onChange={setUrgency}/></div></div>)},
-    {title:'Dor, ardência e intestino',sub:'Indique a intensidade de cada sintoma',content:(<div style={{display:'flex',flexDirection:'column',gap:20}}>{orInt&&<OrientacaoCard {...orInt}/>}<div><div style={{fontSize:13,fontWeight:500,color:C.gray900,marginBottom:6}}>Dor ou ardência ao urinar</div><div style={{fontSize:28,fontWeight:500,textAlign:'center',color:pain<=3?C.teal600:pain<=6?C.amber600:C.red400,marginBottom:8}}>{pain}/10</div><div style={{height:6,borderRadius:4,background:`linear-gradient(to right, ${C.teal400}, ${C.amber400}, ${C.red400})`,marginBottom:8}}/><input type="range" min={0} max={10} step={1} value={pain} onChange={e=>setPain(parseInt(e.target.value))} style={{width:'100%',accentColor:C.teal600}}/><div style={{display:'flex',justifyContent:'space-between',fontSize:9,color:C.gray400}}><span>0 — Sem dor</span><span>5 — Moderada</span><span>10 — Insuportável</span></div></div><div><div style={{fontSize:13,fontWeight:500,color:C.gray900,marginBottom:10}}>Diarreia hoje</div><IntensityBars value={diarrhea} onChange={setDiarrhea} labels={['Não','Amolecidas','Leve','Intensa','Grave']}/></div></div>)},
+    {title:'Dor, ardência e intestino',sub:'Indique a intensidade de cada sintoma',content:(<div style={{display:'flex',flexDirection:'column',gap:20}}>{orInt&&<OrientacaoCard {...orInt}/>}<div><div style={{fontSize:13,fontWeight:500,color:C.gray900,marginBottom:12}}>Dor ou ardência ao urinar</div><PainSlider value={pain} onChange={setPain}/></div><div><div style={{fontSize:13,fontWeight:500,color:C.gray900,marginBottom:10}}>Diarreia — quantas vezes hoje?</div><DiorreiaFreq value={diarrhea} onChange={setDiarrhea}/></div></div>)},
     {title:'Cansaço e bem-estar',sub:'Como você se sentiu hoje de modo geral?',content:(<div style={{display:'flex',flexDirection:'column',gap:20}}><div><div style={{fontSize:13,fontWeight:500,color:C.gray900,marginBottom:10}}>Como você está se sentindo?</div><EmojiSelector value={wellbeing} onChange={setWellbeing}/></div><div><div style={{fontSize:13,fontWeight:500,color:C.gray900,marginBottom:10}}>Cansaço hoje</div><IntensityBars value={fatigue} onChange={setFatigue} labels={['Nenhum','Leve','Moderado','Intenso','Extremo']}/></div></div>)},
-    {title:'Revisão do registro',sub:'Confirme antes de enviar',content:(<div>{[['Regiões',Object.entries(zones).filter(([,v])=>v).map(([k])=>ZONE_CFG[k].name).join(', ')||'Nenhuma'],['Frequência urinária',freqOpts[freq]],['Urgência',['Sem urgência','Raramente','Às vezes','Frequentemente','Perdi o controle'][urgency]],['Dor/ardência',`${pain}/10`],['Diarreia',severityLabels[diarrhea]],['Bem-estar',wellbeing!==null?emojiLabels[wellbeing]:'—'],['Cansaço',severityLabels[fatigue]]].map(([label,val])=>(<div key={label} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'9px 0',borderBottom:`0.5px solid ${C.gray100}`,fontSize:12}}><span style={{color:C.gray600}}>{label}</span><span style={{fontWeight:500,color:C.gray900}}>{val}</span></div>))}<div style={{background:C.gray50,borderRadius:8,padding:'10px 12px',marginTop:14,fontSize:11,color:C.gray600,display:'flex',gap:6,alignItems:'center'}}>🔒 Seus dados são vistos apenas pela sua equipe de saúde.</div></div>)},
+    {title:'Revisão do registro',sub:'Confirme antes de enviar',content:(<div>{[['Regiões',Object.entries(zones).filter(([,v])=>v).map(([k])=>ZONE_CFG[k].name).join(', ')||'Nenhuma'],['Frequência urinária',freqOpts[freq]],['Urgência',['Nenhuma','Leve','Moderada','Intensa','Grave'][urgency]],['Dor/ardência',`${pain}/10`],['Diarreia',['Nenhuma','Amolecidas','Leve (3-4×)','Intensa (5-6×)','Grave (+7×)'][diarrhea]],['Bem-estar',wellbeing!==null?emojiLabels[wellbeing]:'—'],['Cansaço',severityLabels[fatigue]]].map(([label,val])=>(<div key={label} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'9px 0',borderBottom:`0.5px solid ${C.gray100}`,fontSize:12}}><span style={{color:C.gray600}}>{label}</span><span style={{fontWeight:500,color:C.gray900}}>{val}</span></div>))}<div style={{background:C.gray50,borderRadius:8,padding:'10px 12px',marginTop:14,fontSize:11,color:C.gray600,display:'flex',gap:6,alignItems:'center'}}>🔒 Seus dados são vistos apenas pela sua equipe de saúde.</div></div>)},
   ]
   const isLast=step===steps.length-1
   return(<div style={{padding:16}}><div style={{display:'flex',alignItems:'center',gap:8,marginBottom:16}}><button onClick={step===0?onBack:()=>setStep(s=>s-1)} style={{background:'none',border:'none',cursor:'pointer',color:C.gray600,fontSize:13,display:'flex',alignItems:'center',gap:4,padding:0}}>← {step===0?'Início':'Voltar'}</button><span style={{fontSize:12,color:C.gray400}}>/ Registro de hoje — 07/05</span></div><div style={{display:'flex',gap:6,justifyContent:'center',marginBottom:16}}>{steps.map((_,i)=><div key={i} style={{height:6,borderRadius:3,background:i<=step?C.teal400:C.gray100,width:i===step?20:6,transition:'all 0.2s'}}/>)}</div><div style={{background:C.white,border:`0.5px solid ${C.gray100}`,borderRadius:16,padding:18,marginBottom:14}}><div style={{fontSize:13,fontWeight:500,color:C.gray600,marginBottom:2}}>{steps[step].title}</div><div style={{fontSize:11,color:C.gray400,marginBottom:16}}>{steps[step].sub}</div>{steps[step].content}</div><button onClick={()=>isLast?setDone(true):setStep(s=>s+1)} style={{width:'100%',padding:12,background:C.teal600,color:C.white,border:'none',borderRadius:10,fontSize:13,fontWeight:500,cursor:'pointer'}}>{isLast?'✉ Enviar registro':'Próximo →'}</button></div>)
@@ -257,7 +335,7 @@ function PatientHome({onFill}){
   const dotBorder=v=>[C.teal100,C.teal200,C.amber600,C.coral600,C.red400][v]||C.gray100
   const weekDays=['S','T','Q','Q','S','S','H']
   const filled=[true,true,true,true,true,false,true]
-  return(<div style={{padding:16}}><div style={{fontSize:18,fontWeight:500,color:C.gray900,marginBottom:2}}>Boa tarde, Mickey.</div><div style={{fontSize:12,color:C.gray600,marginBottom:16}}>Semana 7 de 8 · Próstata · HCI Ijuí</div><div style={{background:C.amber50,border:`0.5px solid ${C.amber400}`,borderRadius:12,padding:'13px 14px',marginBottom:14,display:'flex',gap:10,alignItems:'flex-start'}}><span style={{fontSize:16}}>⚠️</span><div style={{fontSize:12,color:C.amber800,lineHeight:1.5}}><strong>Sua equipe foi notificada.</strong><br/>Seus sintomas urinários dos últimos 2 dias indicam que você pode precisar de atenção.</div></div><div style={{background:C.white,border:`0.5px solid ${C.gray100}`,borderRadius:16,padding:16,marginBottom:14}}><div style={{fontSize:12,fontWeight:500,color:C.gray600,marginBottom:10}}>Progresso do tratamento</div><div style={{background:C.gray50,borderRadius:4,height:6,marginBottom:6,overflow:'hidden'}}><div style={{width:'87%',height:'100%',background:C.teal400,borderRadius:4}}/></div><div style={{display:'flex',justifyContent:'space-between',fontSize:10,color:C.gray400,marginBottom:14}}><span>Início — 15/03</span><span style={{fontWeight:500,color:C.teal600}}>87% · 31/35 frações</span><span>Término — 12/05</span></div><div style={{fontSize:11,color:C.gray400,marginBottom:6}}>Registros nesta semana</div><div style={{display:'flex',gap:5}}>{weekDays.map((d,i)=>(<div key={i} style={{width:28,height:28,borderRadius:5,display:'flex',alignItems:'center',justifyContent:'center',fontSize:10,fontWeight:500,background:i===6?C.teal400:filled[i]?C.teal50:C.gray50,color:i===6?C.white:filled[i]?C.teal800:C.gray400,border:`0.5px solid ${i===6?C.teal400:filled[i]?C.teal100:C.gray100}`}}>{d}</div>))}</div></div><div style={{background:dicas.bg,border:`0.5px solid ${dicas.cor}`,borderRadius:12,padding:'12px 14px',marginBottom:14}}><div style={{display:'flex',alignItems:'center',gap:6,marginBottom:6}}><span>🌟</span><span style={{fontSize:12,fontWeight:600,color:dicas.textColor}}>{dicas.titulo}</span></div><div style={{fontSize:12,color:dicas.textColor,opacity:0.85}}>→ {dicas.itens[0]}</div><div style={{fontSize:12,color:dicas.textColor,opacity:0.85,marginTop:3}}>→ {dicas.itens[1]}</div></div><div style={{background:C.white,border:`0.5px solid ${C.gray100}`,borderRadius:16,padding:16,marginBottom:14}}><div style={{fontSize:12,fontWeight:500,color:C.gray600,marginBottom:12}}>Histórico recente</div>{['07/05','06/05','05/05','04/05','03/05'].map((date,ri)=>(<div key={ri} style={{display:'flex',alignItems:'center',gap:8,padding:'7px 0',borderBottom:ri<4?`0.5px solid ${C.gray50}`:'none',fontSize:12}}><span style={{color:C.gray400,minWidth:44}}>{date}</span><div style={{display:'flex',gap:4,flex:1}}>{histDots[ri].map((v,i)=><div key={i} style={{width:12,height:12,borderRadius:'50%',background:dotColor(v),border:`1px solid ${dotBorder(v)}`}}/>)}</div>{ri===0&&<span style={{fontSize:10,color:C.gray400}}>hoje</span>}</div>))}</div><button onClick={onFill} style={{width:'100%',padding:12,background:C.teal600,color:C.white,border:'none',borderRadius:10,fontSize:14,fontWeight:500,cursor:'pointer'}}>📋 Registrar sintomas de hoje</button></div>)
+  return(<div style={{padding:16}}><div style={{fontSize:18,fontWeight:500,color:C.gray900,marginBottom:2}}>Boa tarde, Roberto.</div><div style={{fontSize:12,color:C.gray600,marginBottom:16}}>Semana 4 de 4 · Próstata · 60 Gy / 20 fx</div><div style={{background:C.amber50,border:`0.5px solid ${C.amber400}`,borderRadius:12,padding:'13px 14px',marginBottom:14,display:'flex',gap:10,alignItems:'flex-start'}}><span style={{fontSize:16}}>⚠️</span><div style={{fontSize:12,color:C.amber800,lineHeight:1.5}}><strong>Sua equipe foi notificada.</strong><br/>Seus sintomas urinários dos últimos 2 dias indicam que você pode precisar de atenção.</div></div><div style={{background:C.white,border:`0.5px solid ${C.gray100}`,borderRadius:16,padding:16,marginBottom:14}}><div style={{fontSize:12,fontWeight:500,color:C.gray600,marginBottom:10}}>Progresso do tratamento</div><div style={{background:C.gray50,borderRadius:4,height:6,marginBottom:6,overflow:'hidden'}}><div style={{width:'87%',height:'100%',background:C.teal400,borderRadius:4}}/></div><div style={{display:'flex',justifyContent:'space-between',fontSize:10,color:C.gray400,marginBottom:14}}><span>Início — 15/03</span><span style={{fontWeight:500,color:C.teal600}}>87% · 31/35 frações</span><span>Término — 12/05</span></div><div style={{fontSize:11,color:C.gray400,marginBottom:6}}>Registros nesta semana</div><div style={{display:'flex',gap:5}}>{weekDays.map((d,i)=>(<div key={i} style={{width:28,height:28,borderRadius:5,display:'flex',alignItems:'center',justifyContent:'center',fontSize:10,fontWeight:500,background:i===6?C.teal400:filled[i]?C.teal50:C.gray50,color:i===6?C.white:filled[i]?C.teal800:C.gray400,border:`0.5px solid ${i===6?C.teal400:filled[i]?C.teal100:C.gray100}`}}>{d}</div>))}</div></div><div style={{background:dicas.bg,border:`0.5px solid ${dicas.cor}`,borderRadius:12,padding:'12px 14px',marginBottom:14}}><div style={{display:'flex',alignItems:'center',gap:6,marginBottom:6}}><span>🌟</span><span style={{fontSize:12,fontWeight:600,color:dicas.textColor}}>{dicas.titulo}</span></div><div style={{fontSize:12,color:dicas.textColor,opacity:0.85}}>→ {dicas.itens[0]}</div><div style={{fontSize:12,color:dicas.textColor,opacity:0.85,marginTop:3}}>→ {dicas.itens[1]}</div></div><div style={{background:C.white,border:`0.5px solid ${C.gray100}`,borderRadius:16,padding:16,marginBottom:14}}><div style={{fontSize:12,fontWeight:500,color:C.gray600,marginBottom:12}}>Histórico recente</div>{['07/05','06/05','05/05','04/05','03/05'].map((date,ri)=>(<div key={ri} style={{display:'flex',alignItems:'center',gap:8,padding:'7px 0',borderBottom:ri<4?`0.5px solid ${C.gray50}`:'none',fontSize:12}}><span style={{color:C.gray400,minWidth:44}}>{date}</span><div style={{display:'flex',gap:4,flex:1}}>{histDots[ri].map((v,i)=><div key={i} style={{width:12,height:12,borderRadius:'50%',background:dotColor(v),border:`1px solid ${dotBorder(v)}`}}/>)}</div>{ri===0&&<span style={{fontSize:10,color:C.gray400}}>hoje</span>}</div>))}</div><button onClick={onFill} style={{width:'100%',padding:12,background:C.teal600,color:C.white,border:'none',borderRadius:10,fontSize:14,fontWeight:500,cursor:'pointer'}}>📋 Registrar sintomas de hoje</button></div>)
 }
 
 const PATIENT_TABS=[{id:'home',icon:'🏠',label:'Início'},{id:'calendar',icon:'📅',label:'Sessões'},{id:'ficha',icon:'📋',label:'Ficha'},{id:'orientacoes',icon:'💡',label:'Orientações'}]
@@ -277,8 +355,8 @@ export default function PacientePage(){
           <span style={{fontSize:11,color:C.gray400}}>/ HCI Ijuí</span>
         </div>
         <div style={{display:'flex',alignItems:'center',gap:8}}>
-          <div style={{width:26,height:26,borderRadius:'50%',background:C.teal50,display:'flex',alignItems:'center',justifyContent:'center',fontSize:10,fontWeight:500,color:C.teal800}}>MM</div>
-          <span style={{fontSize:12,color:C.gray600}}>Mickey Mouse</span>
+          <div style={{width:26,height:26,borderRadius:'50%',background:C.teal50,display:'flex',alignItems:'center',justifyContent:'center',fontSize:10,fontWeight:500,color:C.teal800}}>RC</div>
+          <span style={{fontSize:12,color:C.gray600}}>Roberto C. M.</span>
         </div>
       </div>
       <div style={{flex:1,overflowY:'auto',paddingBottom:showForm?0:70}}>

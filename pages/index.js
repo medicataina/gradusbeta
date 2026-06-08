@@ -123,6 +123,100 @@ export default function Landing() {
         </div>
       </div>
 
+      {/* Referências científicas */}
+      <div style={{ padding:'60px 24px', background: C.white }}>
+        <div style={{ maxWidth:1100, margin:'0 auto' }}>
+          <div style={{ fontSize:11, fontWeight:600, color:C.teal600, letterSpacing:'0.1em', marginBottom:16, textAlign:'center' }}>EVIDÊNCIA CIENTÍFICA</div>
+          <h2 style={{ fontSize:'clamp(22px, 3vw, 32px)', fontWeight:700, color:C.gray900, letterSpacing:'-0.5px', marginBottom:8, textAlign:'center' }}>
+            PROs em oncologia e radioterapia
+          </h2>
+          <p style={{ fontSize:14, color:C.gray600, textAlign:'center', maxWidth:600, margin:'0 auto 40px', lineHeight:1.7 }}>
+            O Gradus é fundamentado em uma base robusta de evidências que sustenta o uso de instrumentos PRO no cuidado oncológico.
+          </p>
+
+          <div style={{ display:'flex', flexDirection:'column', gap:14 }}>
+            {[
+              {
+                badge:'NEJM · 2016',
+                authors:'Basch E et al.',
+                title:'Symptom Monitoring with Patient-Reported Outcomes During Routine Cancer Treatment.',
+                journal:'N Engl J Med. 2016;374(9):809-820.',
+                doi:'10.1056/NEJMoa1510364',
+                destaque:'Ensaio clínico randomizado demonstrando melhora significativa na qualidade de vida e redução de visitas à emergência com monitoramento eletrônico de PROs durante quimioterapia.',
+                cor: C.teal400, bg: C.teal50,
+              },
+              {
+                badge:'JAMA · 2017',
+                authors:'Basch E et al.',
+                title:'Overall Survival Results of a Trial Assessing Patient-Reported Outcomes for Symptom Monitoring During Routine Cancer Treatment.',
+                journal:'JAMA. 2017;318(2):197-198.',
+                doi:'10.1001/jama.2017.7156',
+                destaque:'Seguimento de 7 anos demonstrou ganho de 5 meses em sobrevida global no grupo com monitoramento por PROs (31,2 vs. 26,0 meses; p=0,03).',
+                cor: C.blue400, bg: C.blue50,
+              },
+              {
+                badge:'J Natl Cancer Inst · 2014',
+                authors:'Basch E, Reeve BB, Mitchell SA et al.',
+                title:'Development of the National Cancer Institute\'s Patient-Reported Outcomes Version of the Common Terminology Criteria for Adverse Events (PRO-CTCAE).',
+                journal:'J Natl Cancer Inst. 2014;106(9):dju244.',
+                doi:'10.1093/jnci/dju244',
+                destaque:'Artigo seminal que descreve o desenvolvimento e validação do PRO-CTCAE — instrumento central utilizado no Gradus para graduação de toxicidade relatada pelo paciente.',
+                cor: C.purple400, bg: C.purple50,
+              },
+              {
+                badge:'Radiother Oncol · 2025',
+                authors:'Voong KR, Li S, Hu C et al.',
+                title:'Routine Review of Patient-Reported Outcome Data Influences Radiotherapy Care: IMPROVE Study Results.',
+                journal:'Radiother Oncol. 2025;203:110688.',
+                doi:'10.1016/j.radonc.2024.110688',
+                destaque:'Ensaio multicêntrico prospectivo demonstrando que a revisão rotineira de PROMs durante a radioterapia alterou a avaliação de toxicidade em 75% e o manejo clínico em 50% dos pacientes.',
+                cor: C.coral400, bg: C.coral50,
+              },
+              {
+                badge:'Front Oncol · 2022',
+                authors:'Laughlin BS et al.',
+                title:'Patient-Reported Outcomes for Patients with Breast Cancer Undergoing Radiotherapy: A Single-Center Registry Experience.',
+                journal:'Front Oncol. 2022;12:920739.',
+                doi:'10.3389/fonc.2022.920739',
+                destaque:'Uma das primeiras experiências clínicas utilizando múltiplos itens do PRO-CTCAE em pacientes com câncer de mama em radioterapia, com análise por esquema de fracionamento.',
+                cor: C.amber400, bg: C.amber50,
+              },
+              {
+                badge:'N Engl J Med · 2008',
+                authors:'Sanda MG, Dunn RL, Michalski J et al.',
+                title:'Quality of Life and Satisfaction with Outcome among Prostate-Cancer Survivors.',
+                journal:'N Engl J Med. 2008;358(12):1250-1261.',
+                doi:'10.1056/NEJMoa074311',
+                destaque:'Validação do EPIC-26 como instrumento de referência para avaliação de qualidade de vida em câncer de próstata — base do módulo prostático do Gradus.',
+                cor: C.gray400, bg: C.gray50,
+              },
+            ].map((ref, i) => (
+              <div key={i} style={{ background:ref.bg, border:`0.5px solid ${ref.cor}22`, borderLeft:`3px solid ${ref.cor}`, borderRadius:10, padding:'16px 18px' }}>
+                <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:12, flexWrap:'wrap' }}>
+                  <div style={{ flex:1 }}>
+                    <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6, flexWrap:'wrap' }}>
+                      <span style={{ fontSize:10, fontWeight:700, padding:'2px 8px', borderRadius:20, background:ref.cor, color:C.white, letterSpacing:'0.04em' }}>{ref.badge}</span>
+                      <span style={{ fontSize:12, fontWeight:600, color:C.gray700 }}>{ref.authors}</span>
+                    </div>
+                    <div style={{ fontSize:13, fontWeight:500, color:C.gray900, marginBottom:4, lineHeight:1.5 }}>{ref.title}</div>
+                    <div style={{ fontSize:11, color:C.gray600, marginBottom:8 }}>{ref.journal}</div>
+                    <div style={{ fontSize:12, color:C.gray700, lineHeight:1.6, background:`${ref.cor}11`, borderRadius:6, padding:'8px 10px' }}>
+                      {ref.destaque}
+                    </div>
+                  </div>
+                </div>
+                <div style={{ marginTop:10 }}>
+                  <a href={`https://doi.org/${ref.doi}`} target="_blank" rel="noopener noreferrer"
+                    style={{ fontSize:11, color:ref.cor, textDecoration:'none', fontWeight:500, fontFamily:'monospace' }}>
+                    DOI: {ref.doi} ↗
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* CTA */}
       <div style={{ padding:'80px 24px', textAlign:'center' }}>
         <div style={{ maxWidth:520, margin:'0 auto' }}>
@@ -153,7 +247,7 @@ export default function Landing() {
           <span style={{ fontSize:14, fontWeight:600, color:C.gray900 }}>Gradus</span>
         </div>
         <p style={{ fontSize:12, color:C.gray400 }}>
-          Protótipo demonstrativo · SBRT 2026 · Hospital de Caridade de Ijuí
+          Protótipo demonstrativo · SBRT 2026 · HCI Ijuí
         </p>
       </div>
     </div>
